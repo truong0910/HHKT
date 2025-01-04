@@ -1,2 +1,2 @@
 # HHKT
-Ứng dụng quản lý dự án
+Ứng dụng bán vé tàu dành cho nhân viên
