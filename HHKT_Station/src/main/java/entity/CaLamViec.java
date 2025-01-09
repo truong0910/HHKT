@@ -104,6 +104,10 @@ public class CaLamViec {
         this.trangThaiCa = trangThaiCa;
     }
 
+    public boolean isTrangThaiCa() {
+        return trangThaiCa;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

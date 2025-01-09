@@ -4,14 +4,17 @@ import entity.ChuyenTau;
 import entity.LoaiToa;
 import entity.Toa;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class Toa_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public Toa_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<Toa> getAllToa() {
@@ -30,33 +33,32 @@ public class Toa_DAO {
     }
 
     public boolean create(Toa toa) {
-        try {
-            em.persist(toa);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(toa));
     }
 
     public boolean update(Toa toa) {
-        try {
-            em.merge(toa);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(toa));
     }
 
     public boolean delete(String maToa) {
-        try {
+        return executeTransaction(() -> {
             Toa toa = getToaTheoID(maToa);
             em.remove(toa);
+        });
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 }

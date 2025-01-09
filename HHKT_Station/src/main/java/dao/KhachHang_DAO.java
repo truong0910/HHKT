@@ -2,14 +2,17 @@ package dao;
 
 import entity.KhachHang;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class KhachHang_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public KhachHang_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<KhachHang> getAllKhachHang() {
@@ -18,34 +21,18 @@ public class KhachHang_DAO {
     }
 
     public boolean create(KhachHang kh) {
-        try {
-            em.persist(kh);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(kh));
     }
 
     public boolean update(KhachHang kh) {
-        try {
-            em.merge(kh);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(kh));
     }
 
     public boolean delete(String maKH) {
-        try {
+        return executeTransaction(() -> {
             KhachHang kh = getKhachHangTheoMaKH(maKH);
             em.remove(kh);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        });
     }
 
     public KhachHang getKhachHangTheoMaKH(String maKH) {
@@ -61,6 +48,21 @@ public class KhachHang_DAO {
     public KhachHang getKhachHangTheoSDT(String sdt) {
         String sql = "Select * from KhachHang where sdt = ?";
         return (KhachHang) em.createNativeQuery(sql, KhachHang.class).setParameter(1, sdt).getSingleResult();
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

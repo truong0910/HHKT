@@ -2,14 +2,17 @@ package dao;
 
 import entity.LoaiVe;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class LoaiVe_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public LoaiVe_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<LoaiVe> getAllLoaiVe() {
@@ -18,36 +21,20 @@ public class LoaiVe_DAO {
     }
 
     public boolean create(LoaiVe loaiVe) {
-        try {
-            em.persist(loaiVe);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(loaiVe));
     }
 
 
     public boolean update(LoaiVe loaiVe) {
-        try {
-            em.merge(loaiVe);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(loaiVe));
     }
 
 
     public boolean delete(String maLoaiVe) {
-        try {
+        return executeTransaction(() -> {
             LoaiVe loaiVe = getLoaiVeTheoMa(maLoaiVe);
             em.remove(loaiVe);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        });
     }
 
     public LoaiVe getLoaiVeTheoTen(String tenLoai) {
@@ -58,5 +45,20 @@ public class LoaiVe_DAO {
     public LoaiVe getLoaiVeTheoMa(String maLoaiVe) {
         String sql = "Select * from LoaiVe where ma_loai_ve = ?";
         return (LoaiVe) em.createNativeQuery(sql, LoaiVe.class).setParameter(1, maLoaiVe).getSingleResult();
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }

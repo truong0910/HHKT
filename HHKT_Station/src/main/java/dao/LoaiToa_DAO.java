@@ -2,14 +2,17 @@ package dao;
 
 import entity.LoaiToa;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class LoaiToa_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public LoaiToa_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<LoaiToa> getAllLoaiToa() {
@@ -18,34 +21,18 @@ public class LoaiToa_DAO {
     }
 
     public boolean create(LoaiToa loaiToa) {
-        try {
-            em.persist(loaiToa);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(loaiToa));
     }
 
     public boolean update(LoaiToa loaiToa) {
-        try {
-            em.merge(loaiToa);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(loaiToa));
     }
 
     public boolean delete(String maLoaiToa) {
-        try {
+        return executeTransaction(() -> {
             LoaiToa loaiToa = getLoaiToaTheoMa(maLoaiToa);
             em.remove(loaiToa);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        });
     }
 
     public LoaiToa getLoaiToaTheoMa(String maLoaiToa) {
@@ -54,15 +41,24 @@ public class LoaiToa_DAO {
     }
 
     public boolean xoaLoaiToaTheoMa(String maLoaiToa) {
+        return executeTransaction(() -> {
+            LoaiToa loaiToa = getLoaiToaTheoMa(maLoaiToa);
+            em.remove(loaiToa);
+        });
+    }
+
+    private boolean executeTransaction(Runnable action) {
         try {
-            String sql = "DELETE FROM LoaiToa WHERE ma_loai_toa = ?";
-            em.createNativeQuery(sql)
-                    .setParameter(1, maLoaiToa)
-                    .executeUpdate();
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 }

@@ -2,14 +2,17 @@ package dao;
 
 import entity.ChuyenTau;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class ChuyenTau_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public ChuyenTau_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<ChuyenTau> getAll() {
@@ -25,22 +28,25 @@ public class ChuyenTau_DAO {
 
 
     public boolean create(ChuyenTau chuyenTau) {
-        try {
-            em.persist(chuyenTau);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(chuyenTau));
     }
 
     public boolean update(ChuyenTau chuyenTau) {
+        return executeTransaction(() -> em.merge(chuyenTau));
+    }
+
+    private boolean executeTransaction(Runnable action) {
         try {
-            em.merge(chuyenTau);
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 }

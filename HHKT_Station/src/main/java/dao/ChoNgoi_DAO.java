@@ -3,14 +3,17 @@ package dao;
 import entity.ChiTietLichTrinh;
 import entity.ChoNgoi;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class ChoNgoi_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
-    public ChoNgoi_DAO(EntityManager em) {
+    public ChoNgoi_DAO(EntityManager em, EntityTransaction transaction) {
         this.em = em;
+        this.transaction = transaction;
     }
 
     public ArrayList<ChoNgoi> getAllChoNgoi() {
@@ -39,34 +42,33 @@ public class ChoNgoi_DAO {
     }
 
     public boolean create(ChoNgoi choNgoi) {
-        try {
-            em.persist(choNgoi);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(choNgoi));
     }
 
     public boolean update(ChoNgoi choNgoi) {
-        try {
-            em.merge(choNgoi);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(choNgoi));
     }
 
     public boolean delete(String maChoNgoi) {
-        try {
+        return executeTransaction(() -> {
             ChoNgoi choNgoi = getChoNgoiTheoMa(maChoNgoi);
             em.remove(choNgoi);
+        });
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public ArrayList<ChoNgoi> getDsChoNgoiTheoToa(String maToa) {

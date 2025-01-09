@@ -2,6 +2,7 @@ package dao;
 
 import entity.HoaDon;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -9,9 +10,11 @@ import java.util.ArrayList;
 
 public class HoaDon_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public HoaDon_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<HoaDon> getAllHoaDon() {
@@ -49,13 +52,7 @@ public class HoaDon_DAO {
     }
 
     public boolean create(HoaDon hoaDon) {
-        try {
-            em.persist(hoaDon);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(hoaDon));
     }
 
     public boolean createTempInvoice(HoaDon hoaDon) {
@@ -80,23 +77,11 @@ public class HoaDon_DAO {
     }
 
     public boolean update(HoaDon hoaDon) {
-        try {
-            em.merge(hoaDon);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(hoaDon));
     }
 
     public boolean delete(HoaDon hoaDon) {
-        try {
-            em.remove(hoaDon);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.remove(hoaDon));
     }
 
     public ArrayList<HoaDon> getDSHDTheoNam(String nam) {
@@ -119,5 +104,20 @@ public class HoaDon_DAO {
                 .setParameter(2, ngayLap.getMonthValue())
                 .setParameter(3, ngayLap.getDayOfMonth())
                 .getResultList();
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }

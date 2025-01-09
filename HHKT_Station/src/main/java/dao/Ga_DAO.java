@@ -2,14 +2,17 @@ package dao;
 
 import entity.Ga;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class Ga_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public Ga_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<Ga> getAllGa() {
@@ -18,34 +21,18 @@ public class Ga_DAO {
     }
 
     public boolean create(Ga ga) {
-        try {
-            em.persist(ga);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(ga));
     }
 
     public boolean update(Ga ga) {
-        try {
-            em.merge(ga);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(ga));
     }
 
     public boolean delete(String maGa) {
-        try {
+        return executeTransaction(() -> {
             Ga ga = getGaTheoMaGa(maGa);
             em.remove(ga);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        });
     }
 
     public Ga getGaTheoMaGa(String maGa) {
@@ -61,6 +48,21 @@ public class Ga_DAO {
     public double KhoangCach(String maGa){
         String sql = "Select khoang_cach from Ga where ma_ga = ?";
         return (double) em.createNativeQuery(sql).setParameter(1, maGa).getSingleResult();
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }   
 

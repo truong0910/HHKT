@@ -10,9 +10,11 @@ import java.util.ArrayList;
 
 public class NhanVien_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public NhanVien_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<NhanVien> getAll() {
@@ -21,15 +23,15 @@ public class NhanVien_DAO {
     }
 
     public boolean create(NhanVien nv) {
-        em.persist(nv);
-        return true;
+        return executeTransaction(() -> em.persist(nv));
     }
 
     public boolean updateTinhTrangCV(String maNV, String tinhTrangCV) {
-        NhanVien nv = em.find(NhanVien.class, maNV);
-        nv.setTinhTrangCv(tinhTrangCV);
-        em.merge(nv);
-        return true;
+        return executeTransaction(() -> {
+            NhanVien nv = getNhanVien(maNV);
+            nv.setTinhTrangCv(tinhTrangCV);
+            em.merge(nv);
+        });
     }
 
     public ArrayList<NhanVien> getDSQuanLy() {
@@ -43,11 +45,25 @@ public class NhanVien_DAO {
     }
 
     public boolean updateInfo(NhanVien nv) {
-        em.merge(nv);
-        return true;
+        return executeTransaction(() -> em.merge(nv));
     }
 
     public NhanVien getNhanVien(String maNV) {
         return em.find(NhanVien.class, maNV);
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }

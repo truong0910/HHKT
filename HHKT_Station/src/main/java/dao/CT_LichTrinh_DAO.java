@@ -2,13 +2,17 @@ package dao;
 
 import entity.*;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class CT_LichTrinh_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
+
     public CT_LichTrinh_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<ChiTietLichTrinh> getAllChiTietLichTrinh() {
@@ -17,23 +21,26 @@ public class CT_LichTrinh_DAO {
     }
 
     public boolean create(ChiTietLichTrinh ctlt) {
-        try {
-            em.persist(ctlt);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.persist(ctlt));
     }
 
     public boolean update(ChiTietLichTrinh ctlt) {
+        return executeTransaction(() -> em.merge(ctlt));
+    }
+
+    private boolean executeTransaction(Runnable action) {
         try {
-            em.merge(ctlt);
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public boolean updateCTLT(ChiTietLichTrinh ctlt, boolean trangThai) {
@@ -50,14 +57,10 @@ public class CT_LichTrinh_DAO {
     }
 
     public boolean delete(String maLT, String maCN) {
-        try {
+        return executeTransaction(() -> {
             ChiTietLichTrinh ctlt = getCTLTTheoCN(maLT, maCN);
             em.remove(ctlt);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        });
     }
 
     public ArrayList<ChiTietLichTrinh> getCtltTheoTrangThai(boolean trangThai) {

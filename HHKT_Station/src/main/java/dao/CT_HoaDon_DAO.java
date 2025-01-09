@@ -2,14 +2,17 @@ package dao;
 
 import entity.ChiTietHoaDon;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.ArrayList;
 
 public class CT_HoaDon_DAO {
     private final EntityManager em;
+    private final EntityTransaction transaction;
 
     public CT_HoaDon_DAO(EntityManager em) {
         this.em = em;
+        this.transaction = em.getTransaction();
     }
 
     public ArrayList<ChiTietHoaDon> getAllCT_HoaDon() {
@@ -28,23 +31,11 @@ public class CT_HoaDon_DAO {
     }
 
     public boolean update(ChiTietHoaDon cthd) {
-        try {
-            em.merge(cthd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.merge(cthd));
     }
 
     public boolean delete(ChiTietHoaDon cthd) {
-        try {
-            em.remove(cthd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return executeTransaction(() -> em.remove(cthd));
     }
 
     public ChiTietHoaDon getCT_HoaDon(String maHD, String maVe) {
@@ -60,6 +51,21 @@ public class CT_HoaDon_DAO {
     public ArrayList<ChiTietHoaDon> getCT_HoaDon(String maHD) {
         String sql = "Select * from ChiTietHoaDon where ma_hd = ?";
         return (ArrayList<ChiTietHoaDon>) em.createNativeQuery(sql, ChiTietHoaDon.class).setParameter(1, maHD).getResultList();
+    }
+
+    private boolean executeTransaction(Runnable action) {
+        try {
+            transaction.begin();
+            action.run();
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 
