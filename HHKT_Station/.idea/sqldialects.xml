@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/CT_HoaDon_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/CT_LichTrinh_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/ChoNgoi_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/ChuyenTau_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/Ga_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/HoaDon_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/KhachHang_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/KhuyenMai_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/LichTrinh_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/LoaiTau_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/LoaiToa_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/LoaiVe_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/NhanVien_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/TaiKhoan_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/Toa_DAO.java" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/dao/Ve_DAO.java" dialect="TSQL" />
+  </component>
+</project>
