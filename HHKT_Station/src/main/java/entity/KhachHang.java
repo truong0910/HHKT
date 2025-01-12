@@ -1,11 +1,19 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "KhachHang", uniqueConstraints = {
         @UniqueConstraint(name = "UQ__socccd", columnNames = {"socccd"}),
@@ -30,59 +38,8 @@ public class KhachHang {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    public KhachHang() {
-    }
-
     public KhachHang(String maKH) {
         this.maKH = maKH;
-    }
-
-    public KhachHang(String email, String sdt, String soCCCD, String tenKH, String maKH) {
-        this.email = email;
-        this.sdt = sdt;
-        this.soCCCD = soCCCD;
-        this.tenKH = tenKH;
-        this.maKH = maKH;
-    }
-
-    public String getMaKH() {
-        return maKH;
-    }
-
-    public void setMaKH(String maKH) {
-        this.maKH = maKH;
-    }
-
-    public String getTenKH() {
-        return tenKH;
-    }
-
-    public void setTenKH(String tenKH) {
-        this.tenKH = tenKH;
-    }
-
-    public String getSoCCCD() {
-        return soCCCD;
-    }
-
-    public void setSoCCCD(String soCCCD) {
-        this.soCCCD = soCCCD;
-    }
-
-    public String getSdt() {
-        return sdt;
-    }
-
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
@@ -8,6 +9,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class CaLamViec {
     @Id
@@ -22,11 +27,11 @@ public class CaLamViec {
     @Column(name = "gio_ket_ca")
     private LocalDateTime gioKetCa;
 
-    @Column(name = "tien_dau_ca", nullable = false)
-    private BigDecimal tienDauCa;
+    @Column(name = "tien_dau_ca", nullable = false, columnDefinition = "money")
+    private double tienDauCa;
 
-    @Column(name = "tien_ket_ca")
-    private BigDecimal tienKetCa;
+    @Column(name = "tien_ket_ca", nullable = false, columnDefinition = "money")
+    private double tienKetCa;
 
     @Nationalized
     @Column(name = "ghi_chu")
@@ -34,79 +39,6 @@ public class CaLamViec {
 
     @Column(name = "trang_thai_ca")
     private Boolean trangThaiCa;
-
-    public CaLamViec() {
-    }
-
-    public CaLamViec(NhanVien nhanVien, LocalDateTime gioMoCa, LocalDateTime gioKetCa, BigDecimal tienDauCa, BigDecimal tienKetCa, String ghiChu, Boolean trangThaiCa) {
-        this.nhanVien = nhanVien;
-        this.gioMoCa = gioMoCa;
-        this.gioKetCa = gioKetCa;
-        this.tienDauCa = tienDauCa;
-        this.tienKetCa = tienKetCa;
-        this.ghiChu = ghiChu;
-        this.trangThaiCa = trangThaiCa;
-    }
-
-    public LocalDateTime getGioMoCa() {
-        return gioMoCa;
-    }
-
-    public void setGioMoCa(LocalDateTime gioMoCa) {
-        this.gioMoCa = gioMoCa;
-    }
-
-    public LocalDateTime getGioKetCa() {
-        return gioKetCa;
-    }
-
-    public void setGioKetCa(LocalDateTime gioKetCa) {
-        this.gioKetCa = gioKetCa;
-    }
-
-    public NhanVien getNhanVien() {
-        return nhanVien;
-    }
-
-    public void setNhanVien(NhanVien nhanVien) {
-        this.nhanVien = nhanVien;
-    }
-
-    public BigDecimal getTienDauCa() {
-        return tienDauCa;
-    }
-
-    public void setTienDauCa(BigDecimal tienDauCa) {
-        this.tienDauCa = tienDauCa;
-    }
-
-    public BigDecimal getTienKetCa() {
-        return tienKetCa;
-    }
-
-    public void setTienKetCa(BigDecimal tienKetCa) {
-        this.tienKetCa = tienKetCa;
-    }
-
-    public String getGhiChu() {
-        return ghiChu;
-    }
-
-    public void setGhiChu(String ghiChu) {
-        this.ghiChu = ghiChu;
-    }
-
-    public Boolean getTrangThaiCa() {
-        return trangThaiCa;
-    }
-
-    public void setTrangThaiCa(Boolean trangThaiCa) {
-        this.trangThaiCa = trangThaiCa;
-    }
-
-    public boolean isTrangThaiCa() {
-        return trangThaiCa;
-    }
 
     @Override
     public boolean equals(Object o) {

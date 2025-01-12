@@ -1,12 +1,20 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Ve {
     @Id
@@ -44,95 +52,8 @@ public class Ve {
     @Column(name = "khu_hoi", nullable = false)
     private Boolean khuHoi = false;
 
-    public Ve() {
-    }
-
     public Ve(String maVe) {
         this.maVe = maVe;
-    }
-
-    public Ve(String maVe, KhachHang khachHang, ChiTietLichTrinh chiTietLichTrinh, LoaiVe loaiVe, String tenKH, String soCCCD, LocalDate ngaySinh, String tinhTrangVe, Boolean khuHoi) {
-        this.maVe = maVe;
-        this.khachHang = khachHang;
-        this.chiTietLichTrinh = chiTietLichTrinh;
-        this.loaiVe = loaiVe;
-        this.tenKH = tenKH;
-        this.soCCCD = soCCCD;
-        this.ngaySinh = ngaySinh;
-        this.tinhTrangVe = tinhTrangVe;
-        this.khuHoi = khuHoi;
-    }
-
-    public KhachHang getKhachHang() {
-        return khachHang;
-    }
-
-    public void setKhachHang(KhachHang khachHang) {
-        this.khachHang = khachHang;
-    }
-
-    public LoaiVe getLoaiVe() {
-        return loaiVe;
-    }
-
-    public void setLoaiVe(LoaiVe loaiVe) {
-        this.loaiVe = loaiVe;
-    }
-
-    public String getMaVe() {
-        return maVe;
-    }
-
-    public void setMaVe(String maVe) {
-        this.maVe = maVe;
-    }
-
-    public ChiTietLichTrinh getChiTietLichTrinh() {
-        return chiTietLichTrinh;
-    }
-
-    public void setChiTietLichTrinh(ChiTietLichTrinh chiTietLichTrinh) {
-        this.chiTietLichTrinh = chiTietLichTrinh;
-    }
-
-    public String getTenKH() {
-        return tenKH;
-    }
-
-    public void setTenKH(String tenKH) {
-        this.tenKH = tenKH;
-    }
-
-    public String getSoCCCD() {
-        return soCCCD;
-    }
-
-    public void setSoCCCD(String soCCCD) {
-        this.soCCCD = soCCCD;
-    }
-
-    public LocalDate getNgaySinh() {
-        return ngaySinh;
-    }
-
-    public void setNgaySinh(LocalDate ngaySinh) {
-        this.ngaySinh = ngaySinh;
-    }
-
-    public String getTinhTrangVe() {
-        return tinhTrangVe;
-    }
-
-    public void setTinhTrangVe(String tinhTrangVe) {
-        this.tinhTrangVe = tinhTrangVe;
-    }
-
-    public Boolean getKhuHoi() {
-        return khuHoi;
-    }
-
-    public void setKhuHoi(Boolean khuHoi) {
-        this.khuHoi = khuHoi;
     }
 
     @Override
