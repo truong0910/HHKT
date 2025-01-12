@@ -1,19 +1,11 @@
 package entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class ChiTietLichTrinh {
     @Id
@@ -30,12 +22,54 @@ public class ChiTietLichTrinh {
     @Column(name = "trang_thai", nullable = false)
     private Boolean trangThai = false;
 
-    @Column(name = "gia_cho", nullable = false, columnDefinition = "money")
-    private double giaCho;
+    @Column(name = "gia_cho", nullable = false)
+    private BigDecimal giaCho;
+
+    public ChiTietLichTrinh() {
+    }
 
     public ChiTietLichTrinh(ChoNgoi choNgoi, LichTrinh lichTrinh) {
         this.choNgoi = choNgoi;
         this.lichTrinh = lichTrinh;
+    }
+
+    public ChiTietLichTrinh(ChoNgoi choNgoi, LichTrinh lichTrinh, Boolean trangThai, BigDecimal giaCho) {
+        this.choNgoi = choNgoi;
+        this.lichTrinh = lichTrinh;
+        this.trangThai = trangThai;
+        this.giaCho = giaCho;
+    }
+
+    public ChoNgoi getChoNgoi() {
+        return choNgoi;
+    }
+
+    public void setChoNgoi(ChoNgoi choNgoi) {
+        this.choNgoi = choNgoi;
+    }
+
+    public LichTrinh getLichTrinh() {
+        return lichTrinh;
+    }
+
+    public void setLichTrinh(LichTrinh lichTrinh) {
+        this.lichTrinh = lichTrinh;
+    }
+
+    public Boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(Boolean trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public BigDecimal getGiaCho() {
+        return giaCho;
+    }
+
+    public void setGiaCho(BigDecimal giaCho) {
+        this.giaCho = giaCho;
     }
 
     @Override

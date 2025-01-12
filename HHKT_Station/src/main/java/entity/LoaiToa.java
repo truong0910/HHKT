@@ -3,18 +3,10 @@ package entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class LoaiToa {
     @Id
@@ -25,8 +17,32 @@ public class LoaiToa {
     @Column(name = "ten_loai_toa", nullable = false, length = 30)
     private String tenLoaiToa;
 
+    public LoaiToa() {
+    }
+
     public LoaiToa(String maLoaiToa) {
         this.maLoaiToa = maLoaiToa;
+    }
+
+    public LoaiToa(String maLoaiToa, String tenLoaiToa) {
+        this.maLoaiToa = maLoaiToa;
+        this.tenLoaiToa = tenLoaiToa;
+    }
+
+    public String getMaLoaiToa() {
+        return maLoaiToa;
+    }
+
+    public void setMaLoaiToa(String maLoaiToa) {
+        this.maLoaiToa = maLoaiToa;
+    }
+
+    public String getTenLoaiToa() {
+        return tenLoaiToa;
+    }
+
+    public void setTenLoaiToa(String tenLoaiToa) {
+        this.tenLoaiToa = tenLoaiToa;
     }
 
     @Override

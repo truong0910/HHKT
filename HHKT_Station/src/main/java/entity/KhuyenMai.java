@@ -3,19 +3,11 @@ package entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class KhuyenMai {
     @Id
@@ -38,8 +30,68 @@ public class KhuyenMai {
     @Column(name = "trang_thai", nullable = false)
     private Boolean trangThai = false;
 
+    public KhuyenMai() {
+    }
+
     public KhuyenMai(String maKM) {
         this.maKM = maKM;
+    }
+
+    public KhuyenMai(String maKM, String moTa, LocalDate ngayApDung, LocalDate ngayHetHan, Double mucKM, Boolean trangThai) {
+        this.maKM = maKM;
+        this.moTa = moTa;
+        this.ngayApDung = ngayApDung;
+        this.ngayHetHan = ngayHetHan;
+        this.mucKM = mucKM;
+        this.trangThai = trangThai;
+    }
+
+    public String getMaKM() {
+        return maKM;
+    }
+
+    public void setMaKM(String maKM) {
+        this.maKM = maKM;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public LocalDate getNgayApDung() {
+        return ngayApDung;
+    }
+
+    public void setNgayApDung(LocalDate ngayApDung) {
+        this.ngayApDung = ngayApDung;
+    }
+
+    public LocalDate getNgayHetHan() {
+        return ngayHetHan;
+    }
+
+    public void setNgayHetHan(LocalDate ngayHetHan) {
+        this.ngayHetHan = ngayHetHan;
+    }
+
+    public Double getMucKM() {
+        return mucKM;
+    }
+
+    public void setMucKM(Double mucKM) {
+        this.mucKM = mucKM;
+    }
+
+    public Boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(Boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
     @Override
